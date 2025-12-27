@@ -1,14 +1,19 @@
 def znak(v):
+    """return a sign of value"""
     if v > 0: return 1
     if v < 0: return -1
     return 0
-
 
 def limit(t):
     return max(min(t, 1), -1)
 
 def conv(v):
+    """0-1  to  -1 - 1"""
     return abs(v)*2-1
+
+def conv2(v):
+    """-1 - 1  to  0-1"""
+    return v/2+0.5
 
 def maxAbs(v, v2):
     if abs(v) > abs(v2): return v
