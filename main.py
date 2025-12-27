@@ -7,7 +7,7 @@ from mainSynth import *
 # ---------- параметры из settings ----------
 RATE        = 44100
 DURATION    = 12
-STEREO      = True
+STEREO      = 1
 OUT_NAME    = "out.wav"
 SYNTH_OR_FX = False
 INP_NAME    = "inp.wav"
@@ -40,10 +40,10 @@ def load_wav(path: str) -> np.ndarray:
     else:
         if data.shape[1] == 1:
             data = data[:, 0]
-            if STEREO:
+            if STEREO != 0:
                 data = np.column_stack([data, data])
         else:
-            if not STEREO:
+            if STEREO == 0:
                 data = data.mean(axis=1)
     return data
 
@@ -58,7 +58,7 @@ def save_wav(path: str, data: np.ndarray, sr: int = RATE):
 # ------------------------------------------------------------------
 
 length = int(DURATION * RATE)
-if STEREO:
+if STEREO != 0:
     out = np.zeros((length, 2), dtype=np.float32)
 else:
     out = np.zeros((length, 1), dtype=np.float32)
@@ -70,7 +70,7 @@ if SYNTH_OR_FX:
     for i in range(length):
         idx = int((i / length) * track.size)
         smp = sinth(track[idx])
-        if STEREO:
+        if STEREO != 0:
             out[i, 0] = smp[0]
             out[i, 1] = smp[1]
         else:
@@ -78,11 +78,15 @@ if SYNTH_OR_FX:
 else:
     # эффект
     inp = load_wav(INP_NAME)
-    for i in range(length):
-        if STEREO:
+    if STEREO == 1:
+        for i in range(length):
             out[i, 0], out[i, 1] = fx(inp[i, 0], inp[i, 1])
+    elif STEREO == 2:
+        for i in range(length):
+            out[i, 0], out[i, 1] = fx(inp[i, 0]), fx(inp[i, 1])
             
-        else:
+    else:
+        for i in range(length):
             out[i, 0] = fx(inp[i, 0])
 
 save_wav(OUT_NAME, out)

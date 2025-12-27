@@ -51,11 +51,6 @@ def comp(v, t, r):
 
     return (min(v_base, v) + v_over) * znk
 
-def znak(v):
-    if v > 0: return 1
-    if v < 0: return -1
-    return 0
-
 def overDrave(v, b, r=2):
     znk = znak(v)
 
